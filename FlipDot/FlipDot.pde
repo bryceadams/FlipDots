@@ -16,8 +16,17 @@
  * - processing.serial | Processing foundation
  * - websockets | Lasse Steenbock Vestergaard | (Only for realtime Crypo feed example)
  */
+boolean onPi = false;
+
+void settings() {
+  if (args != null) {
+    onPi = true;
+  }
+
+  size(onPi ? 10 : 1080, onPi ? 5 : 720, P2D);
+}
+
 void setup() {
-  size(1080, 720, P2D);
   frameRate(config_fps);
   colorMode(RGB, 255, 255, 255, 1);
 
@@ -25,7 +34,10 @@ void setup() {
   cast_setup();
   config_setup();
   stages_setup();
-  ui_setup();
+  
+  if (! onPi) {
+    ui_setup();
+  }
 
   // Scene setup
   //crypto_ticker_setup();
@@ -67,9 +79,15 @@ void draw() {
 
   // End drawing
   virtualDisplay.endDraw();
+  
+  if (onPi) {
+      println(round(frameRate) + " fps (target: " + config_fps + "fps)");
+  }
 
   // Preview frame render
-  ui_render();
+  if (! onPi) {
+    ui_render();
+  }
 
   // Process frame
   stage_process();
