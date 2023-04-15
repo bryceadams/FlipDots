@@ -16,6 +16,9 @@
  * - processing.serial | Processing foundation
  * - websockets | Lasse Steenbock Vestergaard | (Only for realtime Crypo feed example)
  */
+import processing.serial.*;
+Serial arduinoPort;  // Create object from Serial class
+
 boolean onPi = false;
 
 void settings() {
@@ -29,6 +32,11 @@ void settings() {
 void setup() {
   frameRate(config_fps);
   colorMode(RGB, 255, 255, 255, 1);
+  
+  if (onPi) {
+    arduinoPort = new Serial(this, "/dev/ttyUSB1", 9600);
+    delay(1000); //GLV added Wait for Arduino to reset
+  }
 
   // Core setup functions
   cast_setup();
@@ -51,6 +59,8 @@ void setup() {
  */
 void draw() {
   background(59);
+  
+  //read_arduino_data();
 
   // 3D test
   virtual3D.beginDraw();

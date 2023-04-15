@@ -3,6 +3,9 @@ void custom() {
   //bouncingBall();
   //blobs();
   snake();
+
+  //counterText();
+  //potentText();
 }
 
 void simpleText() {
@@ -16,8 +19,36 @@ void simpleText() {
   virtualDisplay.text("Hello!", virtualDisplay.width / 2, virtualDisplay.height / 3);
 }
 
+int count = 0;
+
+void counterText() {
+  count = count + 1;
+  virtualDisplay.background(0);
+  virtualDisplay.fill(255);
+  virtualDisplay.noStroke();
+
+  virtualDisplay.textFont(FlipDotFont_pixel);
+  virtualDisplay.textLeading(7);
+  virtualDisplay.textAlign(CENTER, CENTER);
+  virtualDisplay.text(count, virtualDisplay.width / 2, virtualDisplay.height / 3);
+}
+
+void potentText() {
+  count = count + 1;
+  virtualDisplay.background(0);
+  virtualDisplay.fill(255);
+  virtualDisplay.noStroke();
+
+  virtualDisplay.textFont(FlipDotFont_pixel);
+  virtualDisplay.textLeading(7);
+  virtualDisplay.textAlign(CENTER, CENTER);
+  virtualDisplay.text(potentValInt, virtualDisplay.width / 2, virtualDisplay.height / 3);
+}
+
 // Ball
-float x, y, xSpeed, ySpeed, ballRadius;
+float speedFactor = 5.0; // Change this value to control the ball speed
+Ball ball;
+float potentValPrev = 0;
 
 // Blobs
 int numBlobs = 10;
@@ -30,11 +61,7 @@ int counter = 0;
 int updateInterval = 3; // Controls how often the snake updates its position
 
 void example_setup() {
-  ballRadius = 3;
-  x = virtualDisplay.width/2;
-  y = virtualDisplay.height/2;
-  xSpeed = 1;
-  ySpeed = 1;
+  ball = new Ball(speedFactor);
   
   for (int i = 0; i < numBlobs; i++) {
     float x = random(virtualDisplay.width);
@@ -50,26 +77,18 @@ void example_setup() {
   counter = 0;
 }
 
-
 void bouncingBall() {
   virtualDisplay.beginDraw();
   virtualDisplay.background(0);
-  virtualDisplay.fill(255);
-  virtualDisplay.noStroke();
-  virtualDisplay.ellipse(x, y, ballRadius*2, ballRadius*2);
-  virtualDisplay.endDraw();
   
-  image(virtualDisplay, 0, 0);
-
-  x += xSpeed;
-  y += ySpeed;
-
-  if (x > virtualDisplay.width - ballRadius || x < ballRadius) {
-    xSpeed = -xSpeed;
+  if (potentValInt != potentValPrev) {
+    potentValPrev = potentValInt;
+    ball.changeSpeed(potentValInt / 100);
   }
-  if (y > virtualDisplay.height - ballRadius || y < ballRadius) {
-    ySpeed = -ySpeed;
-  }
+  
+  ball.update();
+  ball.display(virtualDisplay);
+  virtualDisplay.endDraw();
 }
 
 
@@ -90,6 +109,8 @@ void snake() {
   virtualDisplay.beginDraw();
   virtualDisplay.background(0);
   
+  snake.changeDirection(potentValInt);
+  
   if (counter % updateInterval == 0) {
     snake.update();
   }
@@ -99,6 +120,40 @@ void snake() {
   virtualDisplay.endDraw();
 }
 
+
+class Ball {
+  PVector position;
+  PVector velocity;
+  float radius;
+
+  Ball(float speedFactor) {
+    position = new PVector(virtualDisplay.width / 2, virtualDisplay.height / 2);
+    velocity = new PVector(speedFactor / 2, speedFactor / 2);
+    radius = 2;
+  }
+  
+  void changeSpeed(float speedFactor) {
+    velocity = new PVector(speedFactor / 2, speedFactor / 2);
+  }
+
+  void update() {
+    position.add(velocity);
+
+    if (position.x - radius < 0 || position.x + radius > virtualDisplay.width) {
+      velocity.x = -velocity.x;
+    }
+
+    if (position.y - radius < 0 || position.y + radius > virtualDisplay.height) {
+      velocity.y = -velocity.y;
+    }
+  }
+
+  void display(PGraphics pg) {
+    pg.fill(255);
+    pg.noStroke();
+    pg.ellipse(position.x, position.y, radius * 2, radius * 2);
+  }
+}
 
 class Blob {
   float x, y, size;
@@ -141,20 +196,19 @@ class Snake {
     velocity = new PVector(1, 0);
   }
 
-  void changeDirection(char direction) {
-    switch (direction) {
-      case 'U':
-        velocity = new PVector(0, -1);
-        break;
-      case 'D':
-        velocity = new PVector(0, 1);
-        break;
-      case 'L':
-        velocity = new PVector(-1, 0);
-        break;
-      case 'R':
-        velocity = new PVector(1, 0);
-        break;
+  void changeDirection(int direction) {
+    if (direction > 400) {
+      // down
+      velocity = new PVector(0, 1);
+    } else if (direction > 250) {
+      // right
+      velocity = new PVector(1, 0);
+    } else if (direction > 150) {
+      // up
+      velocity = new PVector(0, -1);
+    } else {
+      // left
+      velocity = new PVector(-1, 0);
     }
   }
 
@@ -177,12 +231,17 @@ class Snake {
 
 void keyPressed() {
   if (keyCode == UP) {
-    snake.changeDirection('U');
+    potentValInt = 300;
+    //ball.changeSpeed(3);
+    //snake.changeDirection('U');
   } else if (keyCode == DOWN) {
-    snake.changeDirection('D');
+    potentValInt = 100;
+        //ball.changeSpeed(1);
+
+    //snake.changeDirection('D');
   } else if (keyCode == LEFT) {
-    snake.changeDirection('L');
+    //snake.changeDirection('L');
   } else if (keyCode == RIGHT) {
-    snake.changeDirection('R');
+    //snake.changeDirection('R');
   }
 }
