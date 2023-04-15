@@ -1,10 +1,35 @@
 void custom() {
+  int animationIndex = mapPotentValToInt(potentValInt);
+  switch (animationIndex) {
+    case 1:
+      simpleText();
+      break;
+    case 2:
+      counterText();
+      break;
+    case 3:
+      potentText();
+      break;
+    case 4:
+      bouncingBall();
+      break;
+    case 5:
+      blobs();
+      break;
+    case 6:
+      snake();
+      break;
+    case 7:
+      stars();
+      break;
+  }
+    
   //simpleText();
   //bouncingBall();
   //blobs();
   //snake();
   //stars();
-  stick();
+  //face();
 
   //counterText();
   //potentText();
@@ -67,9 +92,10 @@ ArrayList<Star> stars;
 int numStars = 50;
 int prevPotentValInt = 50;
 
-// Stick
-float angle;
-float angleSpeed = 0.1;
+// Face
+float mouthState;
+float mouthStateChangeSpeed = 0.1;
+int mouthDirection = 1;
 
 void example_setup() {
   ball = new Ball(speedFactor);
@@ -94,8 +120,13 @@ void example_setup() {
     stars.add(new Star());
   }
 
-  // stick
-  angle = 0;
+  // face
+  mouthState = 0;
+}
+
+// You will need to update the potentValInt according to your input in your actual implementation.
+void mouseClicked() {
+  potentValInt = (potentValInt + 100) % 501;
 }
 
 void bouncingBall() {
@@ -172,37 +203,38 @@ void stars() {
   virtualDisplay.endDraw();
 }
 
-void stick() {
+void face() {
   virtualDisplay.beginDraw();
   virtualDisplay.background(0);
-  virtualDisplay.translate(virtualDisplay.width / 2, virtualDisplay.height - 1);
+  virtualDisplay.translate(virtualDisplay.width / 2, virtualDisplay.height / 2);
   virtualDisplay.stroke(255);
-  virtualDisplay.scale(0.5);
-  drawStickFigure(virtualDisplay);
-  angle += angleSpeed;
+  virtualDisplay.strokeWeight(0.5);
+  virtualDisplay.noFill();
+  drawSmileyFace(virtualDisplay, mouthDirection);
+  mouthState += mouthStateChangeSpeed * mouthDirection;
+
+  counter++;
+  if (counter % 10 == 0) {
+    mouthDirection *= -1;
+  }
+
   virtualDisplay.endDraw();
 }
 
-
-void drawStickFigure(PGraphics pg) {
-  float legLength = 5;
-  float armLength = 3;
-
+void drawSmileyFace(PGraphics pg, int mouthDir) {
   // Draw head
-  pg.ellipse(0, -10, 2, 2);
+  pg.ellipse(0, 0, 12, 12);
 
-  // Draw body
-  pg.line(0, -9, 0, -4);
+  // Draw eyes
+  pg.ellipse(-2, -2, 2, 1);
+  pg.ellipse(2, -2, 2, 1);
 
-  // Draw arms
-  float armAngle = sin(angle) * 15;
-  pg.line(0, -7, armLength * cos(radians(180 + armAngle)), -7 + armLength * sin(radians(180 + armAngle)));
-  pg.line(0, -7, armLength * cos(radians(180 - armAngle)), -7 + armLength * sin(radians(180 - armAngle)));
-
-  // Draw legs
-  float legAngle = sin(angle) * 15;
-  pg.line(0, -4, legLength * cos(radians(legAngle)), -4 + legLength * sin(radians(legAngle)));
-  pg.line(0, -4, legLength * cos(radians(-legAngle)), -4 + legLength * sin(radians(-legAngle)));
+  // Draw mouth
+  if (mouthDir == 1) {
+    pg.arc(0, 2, 8, 3, 0.2, PI - 0.2);
+  } else {
+    pg.arc(0, 3, 8, 3, PI + 0.2, TWO_PI - 0.2);
+  }
 }
 
 class Ball {
@@ -336,6 +368,10 @@ class Star {
     pg.noStroke();
     pg.rect(position.x, position.y, 1, 1);
   }
+}
+
+int mapPotentValToInt(int potentVal) {
+  return ceil(map(potentVal, 0, 500, 0, 8));
 }
 
 void keyPressed() {
