@@ -2,7 +2,9 @@ void custom() {
   //simpleText();
   //bouncingBall();
   //blobs();
-  snake();
+  //snake();
+  //stars();
+  stick();
 
   //counterText();
   //potentText();
@@ -60,6 +62,15 @@ Snake snake;
 int counter = 0;
 int updateInterval = 3; // Controls how often the snake updates its position
 
+// Stars
+ArrayList<Star> stars;
+int numStars = 50;
+int prevPotentValInt = 50;
+
+// Stick
+float angle;
+float angleSpeed = 0.1;
+
 void example_setup() {
   ball = new Ball(speedFactor);
   
@@ -75,6 +86,16 @@ void example_setup() {
   
   snake = new Snake(10);
   counter = 0;
+  
+  // stars
+  stars = new ArrayList<Star>();
+  int mappedPotentValInt = int(map(potentValInt, 0, 500, 0, 200));
+  for (int i = 0; i < mappedPotentValInt; i++) {
+    stars.add(new Star());
+  }
+
+  // stick
+  angle = 0;
 }
 
 void bouncingBall() {
@@ -120,6 +141,69 @@ void snake() {
   virtualDisplay.endDraw();
 }
 
+void stars() {
+   int mappedPotentValInt = int(map(potentValInt, 0, 500, 0, 200));
+  
+  // Check if potentValInt has changed
+  if (mappedPotentValInt != prevPotentValInt) {
+    int difference = mappedPotentValInt - prevPotentValInt;
+    if (difference > 0) {
+      // Add stars
+      for (int i = 0; i < difference; i++) {
+        stars.add(new Star());
+      }
+    } else {
+      // Remove stars
+      for (int i = 0; i < -difference; i++) {
+        if (stars.size() > 0) {
+          stars.remove(0);
+        }
+      }
+    }
+    prevPotentValInt = mappedPotentValInt;
+  }
+
+  virtualDisplay.beginDraw();
+  virtualDisplay.background(0);
+  for (Star star : stars) {
+    star.update();
+    star.display(virtualDisplay);
+  }
+  virtualDisplay.endDraw();
+}
+
+void stick() {
+  virtualDisplay.beginDraw();
+  virtualDisplay.background(0);
+  virtualDisplay.translate(virtualDisplay.width / 2, virtualDisplay.height - 1);
+  virtualDisplay.stroke(255);
+  virtualDisplay.scale(0.5);
+  drawStickFigure(virtualDisplay);
+  angle += angleSpeed;
+  virtualDisplay.endDraw();
+}
+
+
+void drawStickFigure(PGraphics pg) {
+  float legLength = 5;
+  float armLength = 3;
+
+  // Draw head
+  pg.ellipse(0, -10, 2, 2);
+
+  // Draw body
+  pg.line(0, -9, 0, -4);
+
+  // Draw arms
+  float armAngle = sin(angle) * 15;
+  pg.line(0, -7, armLength * cos(radians(180 + armAngle)), -7 + armLength * sin(radians(180 + armAngle)));
+  pg.line(0, -7, armLength * cos(radians(180 - armAngle)), -7 + armLength * sin(radians(180 - armAngle)));
+
+  // Draw legs
+  float legAngle = sin(angle) * 15;
+  pg.line(0, -4, legLength * cos(radians(legAngle)), -4 + legLength * sin(radians(legAngle)));
+  pg.line(0, -4, legLength * cos(radians(-legAngle)), -4 + legLength * sin(radians(-legAngle)));
+}
 
 class Ball {
   PVector position;
@@ -226,6 +310,31 @@ class Snake {
     for (PVector segment : body) {
       pg.rect(segment.x, segment.y, 1, 1);
     }
+  }
+}
+
+class Star {
+  PVector position;
+  float speed;
+
+  Star() {
+    position = new PVector(random(virtualDisplay.width), random(virtualDisplay.height));
+    speed = random(0.1, 1);
+  }
+
+  void update() {
+    position.y += speed;
+    if (position.y > virtualDisplay.height) {
+      position.y = 0;
+      position.x = random(virtualDisplay.width);
+      speed = random(0.1, 1);
+    }
+  }
+
+  void display(PGraphics pg) {
+    pg.fill(255);
+    pg.noStroke();
+    pg.rect(position.x, position.y, 1, 1);
   }
 }
 
