@@ -470,6 +470,7 @@ class Tetromino {
 * if you want to use key presses elsewhere in your own code
 * you will need to extend of rename these functions.
 */
+/*
 void keyPressed() {
   // Down
   if (keyCode == DOWN) {
@@ -516,3 +517,4 @@ void keyReleased() {
     tetris.input_right = false;
   }
 }
+*/

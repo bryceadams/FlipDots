@@ -38,6 +38,8 @@ void setup() {
   if (! onPi) {
     ui_setup();
   }
+  
+  example_setup();
 
   // Scene setup
   //crypto_ticker_setup();
@@ -69,7 +71,8 @@ void draw() {
 
   // Blips
   //example_blips();
-  example_anim();
+  //example_anim();
+  custom();
 
   // Games
   // games_tetris();

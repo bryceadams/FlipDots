@@ -65,7 +65,7 @@ String[] netAdapters = {
 // USB device
 // COM port:baud rate
 String[] serialAdapters = {
-  "COM13:57600"
+  "ttyUSB0:57600"
 };
 
 // Create adapters
