@@ -15,15 +15,19 @@ void read_arduino_data() {
     // split each string by a semi colon and assign values
     potentAValInt = Integer.valueOf(split(potentVals[0], ':')[1].trim());
     potentBValInt = Integer.valueOf(split(potentVals[1], ':')[1].trim());
-    potentCValInt = Integer.valueOf(split(potentVals[2], ':')[1].trim());
 
+    println(potentVals[2]);
+    /*
+    potentValString = potentVals[2].readStringUntil('A');
+    potentCValInt = Integer.valueOf(split(potentValString, ':')[1].trim());
+*/
     print("A: ");
     println(potentAValInt); // read it temp
 
     print("B: ");
     println(potentBValInt); // read it temp
 
-    print("C: ");
-    println(potentCValInt); // read it temp
+    //print("C: ");
+    //println(potentCValInt); // read it temp
   }  
 }
