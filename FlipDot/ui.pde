@@ -37,6 +37,8 @@ void ui_render() {
   text(round(frameRate) + " fps (target: " + config_fps + "fps)", ui_offset, 140);
   text("Runtime: " + secondsToTime(round(frameCount / config_fps)), ui_offset, 160);
   
+  // Inputs for 
+  
   // Simulator
   if (config_show_simulator) {
     ui_simulate();
@@ -88,6 +90,11 @@ void ui_render() {
     }
   }
   pop();
+  
+  // Variables setting section
+  text("Potent A Value (0-500): " + potentAValInt, ui_offset, 480);
+  text("Potent B Value (0-500): " + potentBValInt, ui_offset, 500);
+
 }
 
 
@@ -133,4 +140,9 @@ String secondsToTime(int seconds) {
   int minutes = (seconds % 3600) / 60;
   int secs = seconds % 60;
   return String.format("%02d:%02d:%02d", hours, minutes, secs);
+}
+
+void mouseMoved() {
+  potentAValInt = int(map(mouseX, 0, width, 0, 500));
+  potentBValInt = int(map(mouseY, 0, height, 0, 500));
 }
