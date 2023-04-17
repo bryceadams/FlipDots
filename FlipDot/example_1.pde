@@ -1,5 +1,5 @@
 void custom() {
-  int animationIndex = mapPotentValToInt(potentValInt);
+  int animationIndex = mapPotentValToInt(potentAValInt);
   switch (animationIndex) {
     case 1:
       simpleText();
@@ -69,13 +69,12 @@ void potentText() {
   virtualDisplay.textFont(FlipDotFont_pixel);
   virtualDisplay.textLeading(7);
   virtualDisplay.textAlign(CENTER, CENTER);
-  virtualDisplay.text(potentValInt, virtualDisplay.width / 2, virtualDisplay.height / 3);
+  virtualDisplay.text(potentBValInt, virtualDisplay.width / 2, virtualDisplay.height / 3);
 }
 
 // Ball
 float speedFactor = 5.0; // Change this value to control the ball speed
 Ball ball;
-float potentValPrev = 0;
 
 // Blobs
 int numBlobs = 10;
@@ -90,7 +89,7 @@ int updateInterval = 3; // Controls how often the snake updates its position
 // Stars
 ArrayList<Star> stars;
 int numStars = 50;
-int prevPotentValInt = 50;
+int potentBValIntPrevious = 50;
 
 // Face
 float mouthState;
@@ -115,7 +114,7 @@ void example_setup() {
   
   // stars
   stars = new ArrayList<Star>();
-  int mappedPotentValInt = int(map(potentValInt, 0, 500, 0, 200));
+  int mappedPotentValInt = int(map(potentBValInt, 0, 500, 0, 200));
   for (int i = 0; i < mappedPotentValInt; i++) {
     stars.add(new Star());
   }
@@ -124,18 +123,13 @@ void example_setup() {
   mouthState = 0;
 }
 
-// You will need to update the potentValInt according to your input in your actual implementation.
-void mouseClicked() {
-  potentValInt = (potentValInt + 100) % 501;
-}
-
 void bouncingBall() {
   virtualDisplay.beginDraw();
   virtualDisplay.background(0);
   
-  if (potentValInt != potentValPrev) {
-    potentValPrev = potentValInt;
-    ball.changeSpeed(potentValInt / 100);
+  if (potentBValInt != potentBValIntPrevious) {
+    potentBValIntPrevious = potentBValInt;
+    ball.changeSpeed(potentBValInt / 100);
   }
   
   ball.update();
@@ -161,7 +155,7 @@ void snake() {
   virtualDisplay.beginDraw();
   virtualDisplay.background(0);
   
-  snake.changeDirection(potentValInt);
+  snake.changeDirection(potentValBInt);
   
   if (counter % updateInterval == 0) {
     snake.update();
@@ -173,11 +167,11 @@ void snake() {
 }
 
 void stars() {
-   int mappedPotentValInt = int(map(potentValInt, 0, 500, 0, 200));
+   int mappedPotentValInt = int(map(potentBValInt, 0, 500, 0, 200));
   
   // Check if potentValInt has changed
-  if (mappedPotentValInt != prevPotentValInt) {
-    int difference = mappedPotentValInt - prevPotentValInt;
+  if (mappedPotentValInt != potentBValIntPrevious) {
+    int difference = mappedPotentValInt - potentBValIntPrevious;
     if (difference > 0) {
       // Add stars
       for (int i = 0; i < difference; i++) {
@@ -191,7 +185,7 @@ void stars() {
         }
       }
     }
-    prevPotentValInt = mappedPotentValInt;
+    potentBValIntPrevious = mappedPotentValInt;
   }
 
   virtualDisplay.beginDraw();
@@ -372,21 +366,4 @@ class Star {
 
 int mapPotentValToInt(int potentVal) {
   return ceil(map(potentVal, 0, 500, 0, 8));
-}
-
-void keyPressed() {
-  if (keyCode == UP) {
-    potentValInt = 300;
-    //ball.changeSpeed(3);
-    //snake.changeDirection('U');
-  } else if (keyCode == DOWN) {
-    potentValInt = 100;
-        //ball.changeSpeed(1);
-
-    //snake.changeDirection('D');
-  } else if (keyCode == LEFT) {
-    //snake.changeDirection('L');
-  } else if (keyCode == RIGHT) {
-    //snake.changeDirection('R');
-  }
 }

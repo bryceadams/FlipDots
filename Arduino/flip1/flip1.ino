@@ -1,4 +1,6 @@
 int potA = 0;
+int potB = 0;
+int potC = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -11,9 +13,26 @@ void loop() {
   if (abs(potA - analogValue) > 5) {
     potA = analogValue;
   }
-  //Serial.write(analogValue);          // send the value serially as a binary value
-  Serial.println(potA);
-  delay(50);
+  Serial.print("A:");
+  Serial.print(potA);
+  
+  int analogValueB = map(analogRead(A1), 0, 1023, 0, 500);
 
-  // @todo prefix different analog read values when serial print so can read each separately in processing
+  // only change if over 5 difference
+  if (abs(potB - analogValueB) > 5) {
+    potB = analogValueB;
+  }
+  Serial.print(" B:");
+  Serial.print(potB);
+  
+  int analogValueC = map(analogRead(A2), 0, 1023, 0, 500);
+
+  // only change if over 5 difference
+  if (abs(potC - analogValueC) > 5) {
+    potC = analogValueC;
+  }
+  Serial.print(" C:");
+  Serial.println(potC);
+  
+  delay(50);
 }
