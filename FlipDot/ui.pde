@@ -97,6 +97,13 @@ void ui_render() {
 
 }
 
+void mouseClicked() {
+  potentAValInt += 500 / animationsCount;
+
+  if (potentAValInt > 500) {
+    potentAValInt = 0;
+  }
+}
 
 /**
  * Processing virtual canvas to simulation display
@@ -143,6 +150,6 @@ String secondsToTime(int seconds) {
 }
 
 void mouseMoved() {
-  potentAValInt = int(map(mouseX, 0, width, 0, 500));
+  //potentAValInt = int(map(mouseX, 0, width, 0, 500));
   potentBValInt = int(map(mouseY, 0, height, 0, 500));
 }
