@@ -1,5 +1,5 @@
 void blips() {
-  int potentB = int(map(potentBValInt, 0, 1023, 3, 10));
+  int potentB = int(map(potentBValInt, 0, 500, 3, 10));
 
   // Blips config
   int blips_count = potentB;

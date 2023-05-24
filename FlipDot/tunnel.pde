@@ -1,6 +1,6 @@
 void tunnel() {
     // get potent b value
-    float potentB = map(potentBValInt, 0, 1023, 1.2, 2.5);
+    float potentB = map(potentBValInt, 0, 500, 1.2, 2.5);
 
     virtualDisplay.stroke(255);
     virtualDisplay.strokeWeight(1);

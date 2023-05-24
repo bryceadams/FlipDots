@@ -1,6 +1,6 @@
 void clouds() {
     // potent b multiples speed
-    float potentB = map(potentBValInt, 0, 1023, 1, 2);
+    float potentB = map(potentBValInt, 0, 500, 1, 2);
 
     float noiseScale = 0.03;
     float threshold = 0.5;
