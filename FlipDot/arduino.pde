@@ -2,7 +2,6 @@ int potentAValInt = 1;        // Data received from the serial port
 int potentBValInt = 1;        // Data received from the serial port
 int potentCValInt = 1;        // Data received from the serial port
 static String potentValString = "1";    // Data received from the serial port
-int potentValInt = 100;
 
 void read_arduino_data() {
   if (arduinoPort.available() > 0) {  // If data is available,
@@ -12,22 +11,18 @@ void read_arduino_data() {
     // then assign to the correct variable
     String[] potentVals = split(potentValString, ' ');
 
+    // only continue if starts with A:
     // split each string by a semi colon and assign values
-    potentAValInt = Integer.valueOf(split(potentVals[0], ':')[1].trim());
-    potentBValInt = Integer.valueOf(split(potentVals[1], ':')[1].trim());
-
-    println(potentVals[2]);
-    /*
-    potentValString = potentVals[2].readStringUntil('A');
-    potentCValInt = Integer.valueOf(split(potentValString, ':')[1].trim());
-*/
-    print("A: ");
-    println(potentAValInt); // read it temp
-
-    print("B: ");
-    println(potentBValInt); // read it temp
-
-    //print("C: ");
-    //println(potentCValInt); // read it temp
+    if (potentVals != null && potentVals[0].startsWith("A:") && potentVals.length >= 2) {
+      // add error catching here in case this fails
+      try {
+        potentAValInt = Integer.valueOf(split(potentVals[0], ':')[1].trim());
+        potentBValInt = Integer.valueOf(split(potentVals[1], ':')[1].trim());
+        potentCValInt = Integer.valueOf(split(potentVals[2], ':')[1].trim());
+      }
+      catch (Exception e) {
+        //println("Error parsing data from Arduino");
+      }
+    }
   }  
 }

@@ -94,6 +94,7 @@ void ui_render() {
   // Variables setting section
   text("Potent A Value (0-500): " + potentAValInt, ui_offset, 480);
   text("Potent B Value (0-500): " + potentBValInt, ui_offset, 500);
+  text("Potent C Value (0-500): " + potentCValInt, ui_offset, 520);
 
 }
 
@@ -150,6 +151,6 @@ String secondsToTime(int seconds) {
 }
 
 void mouseMoved() {
-  //potentAValInt = int(map(mouseX, 0, width, 0, 500));
   potentBValInt = int(map(mouseY, 0, height, 0, 500));
+  potentCValInt = int(map(mouseX, 0, width, 0, 500));
 }
