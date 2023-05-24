@@ -1,5 +1,13 @@
-void custom() {
+int animationsCount = 7;
+
+int getAnimationIndex() {
   int animationIndex = mapPotentValToInt(potentAValInt);
+  //animationIndex = 1;
+  return animationIndex;
+}
+
+void custom() {
+  int animationIndex = getAnimationIndex();
   switch (animationIndex) {
     case 1:
       simpleText();
@@ -11,10 +19,10 @@ void custom() {
       potentText();
       break;
     case 4:
-      bouncingBall();
+      balls();
       break;
     case 5:
-      blobs();
+      //blobs();
       break;
     case 6:
       snake();
@@ -43,7 +51,62 @@ void simpleText() {
   virtualDisplay.textFont(FlipDotFont_pixel);
   virtualDisplay.textLeading(7);
   virtualDisplay.textAlign(CENTER, CENTER);
-  virtualDisplay.text("Hello!", virtualDisplay.width / 2, virtualDisplay.height / 3);
+
+  // array of text strings that are under 8 characters each and will fit on the display
+  String[] textStrings = {
+    "Hello!",
+    "I'm a",
+    "FlipDot",
+    "Display",
+    "I'm",
+    "controlled",
+    "by",
+    "a",
+    "Potentiometer",
+    "and",
+    "an",
+    "Arduino",
+    "Uno",
+    "I'm",
+    "made",
+    "by",
+    "Marius",
+    "Watz",
+    "and",
+    "you",
+    "can",
+    "find",
+    "me",
+    "on",
+    "Github",
+    "at",
+    "github.com/mariuswatz/FlipDotArduino",
+    "I'm",
+    "a",
+    "work",
+    "in",
+    "progress",
+    "so",
+    "please",
+    "be",
+    "patient",
+    "with",
+    "me",
+    "I",
+    "will",
+    "be",
+    "better",
+    "soon",
+    "I",
+    "promise",
+    ":-)"
+  };
+
+  // get the length of the array and mapped potent value (which string to output below)
+  int textStringsLength = textStrings.length;
+  int mappedPotentValInt = int(map(potentBValInt, 0, 500, 0, textStringsLength));
+
+  virtualDisplay.text(textStrings[mappedPotentValInt], virtualDisplay.width / 2, virtualDisplay.height / 3);
 }
 
 int count = 0;
@@ -73,8 +136,7 @@ void potentText() {
 }
 
 // Ball
-float speedFactor = 5.0; // Change this value to control the ball speed
-Ball ball;
+ArrayList<Ball> balls;
 
 // Blobs
 int numBlobs = 10;
@@ -96,9 +158,19 @@ float mouthState;
 float mouthStateChangeSpeed = 0.1;
 int mouthDirection = 1;
 
-void example_setup() {
-  ball = new Ball(speedFactor);
+void example_setup() {  
+  // balls
+  balls = new ArrayList<Ball>();
+  for (int i = 0; i < 10; i++) {
+    float x = random(virtualDisplay.width);
+    float y = random(virtualDisplay.height);
+    float vx = random(-1, 1);
+    float vy = random(-1, 1);
+    float radius = random(1, 2);
+    balls.add(new Ball(x, y, vx, vy, radius));
+  }
   
+  // blobs
   for (int i = 0; i < numBlobs; i++) {
     float x = random(virtualDisplay.width);
     float y = random(virtualDisplay.height);
@@ -109,6 +181,7 @@ void example_setup() {
     blobs[i] = new Blob(x, y, size, c, xSpeed, ySpeed);
   }
   
+  // snake
   snake = new Snake(10);
   counter = 0;
   
@@ -123,26 +196,32 @@ void example_setup() {
   mouthState = 0;
 }
 
-void bouncingBall() {
+void balls() {
   virtualDisplay.beginDraw();
   virtualDisplay.background(0);
-  
-  if (potentBValInt != potentBValIntPrevious) {
-    potentBValIntPrevious = potentBValInt;
-    ball.changeSpeed(potentBValInt / 100);
+
+  float speedFactor = map(potentBValInt, 0, 500, 0.1, 2);
+
+  for (Ball ball : balls) {
+    ball.vx *= speedFactor;
+    ball.vy *= speedFactor;
+    ball.update();
+    ball.vx /= speedFactor;
+    ball.vy /= speedFactor;
+    ball.display();
   }
-  
-  ball.update();
-  ball.display(virtualDisplay);
+
   virtualDisplay.endDraw();
 }
-
 
 void blobs() {
   virtualDisplay.beginDraw();
   virtualDisplay.background(0);
   
-  for (Blob b : blobs) {
+  for (Blob b : blobs) {    
+    b.xSpeed = int(map(potentBValInt, 0, 500, -2, 2));
+    b.ySpeed = int(map(potentBValInt, 0, 500, -2, 2));
+
     b.update();
     b.display(virtualDisplay);
   }
@@ -155,7 +234,7 @@ void snake() {
   virtualDisplay.beginDraw();
   virtualDisplay.background(0);
   
-  snake.changeDirection(potentValBInt);
+  snake.changeDirection(potentBValInt);
   
   if (counter % updateInterval == 0) {
     snake.update();
@@ -232,36 +311,41 @@ void drawSmileyFace(PGraphics pg, int mouthDir) {
 }
 
 class Ball {
-  PVector position;
-  PVector velocity;
+  float x, y;
+  float vx, vy;
   float radius;
 
-  Ball(float speedFactor) {
-    position = new PVector(virtualDisplay.width / 2, virtualDisplay.height / 2);
-    velocity = new PVector(speedFactor / 2, speedFactor / 2);
-    radius = 2;
-  }
-  
-  void changeSpeed(float speedFactor) {
-    velocity = new PVector(speedFactor / 2, speedFactor / 2);
+  Ball(float x, float y, float vx, float vy, float radius) {
+    this.x = x;
+    this.y = y;
+    this.vx = vx;
+    this.vy = vy;
+    this.radius = radius;
   }
 
   void update() {
-    position.add(velocity);
+    x += vx;
+    y += vy;
 
-    if (position.x - radius < 0 || position.x + radius > virtualDisplay.width) {
-      velocity.x = -velocity.x;
+    if (x < radius) {
+      x = radius;
+      vx = -vx;
+    } else if (x > virtualDisplay.width - radius) {
+      x = virtualDisplay.width - radius;
+      vx = -vx;
     }
-
-    if (position.y - radius < 0 || position.y + radius > virtualDisplay.height) {
-      velocity.y = -velocity.y;
+    
+    if (y < radius) {
+      y = radius;
+      vy = -vy;
+    } else if (y > virtualDisplay.height - radius) {
+      y = virtualDisplay.height - radius;
+      vy = -vy;
     }
   }
 
-  void display(PGraphics pg) {
-    pg.fill(255);
-    pg.noStroke();
-    pg.ellipse(position.x, position.y, radius * 2, radius * 2);
+  void display() {
+    virtualDisplay.ellipse(x, y, radius * 2, radius * 2);
   }
 }
 
@@ -365,5 +449,5 @@ class Star {
 }
 
 int mapPotentValToInt(int potentVal) {
-  return ceil(map(potentVal, 0, 500, 0, 8));
+  return ceil(map(potentVal, 0, 500, 0, animationsCount));
 }
