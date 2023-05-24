@@ -34,7 +34,13 @@ void setup() {
   colorMode(RGB, 255, 255, 255, 1);
   
   if (onPi) {
-    arduinoPort = new Serial(this, "/dev/ttyUSB1", 9600);
+    // try connect to /dev/ttyACM0, but if that doesn't work, use /dev/ttyACM1
+    try {
+      arduinoPort = new Serial(this, "/dev/ttyACM0", 9600);
+    } catch (Exception e) {
+      arduinoPort = new Serial(this, "/dev/ttyACM1", 9600);
+    }
+
     delay(1000); //GLV added Wait for Arduino to reset
   }
 
@@ -60,8 +66,10 @@ void setup() {
 void draw() {
   background(59);
   
-  //read_arduino_data();
-
+  if (onPi) {  
+    read_arduino_data();
+  }
+  
   // 3D test
   virtual3D.beginDraw();
   virtual3D.background(0);
