@@ -80,8 +80,17 @@ void draw() {
   // End drawing
   virtualDisplay.endDraw();
   
+  // display debug stats every 2 seconds if on pi
   if (onPi) {
-      println(round(frameRate) + " fps (target: " + config_fps + "fps)");
+    if (frameCount % (config_fps * 2) == 0) {
+      println("FPS: " + round(frameRate) + " (target: " + config_fps + "fps)");
+      //println("Memory: " + round((float) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024) + "MB");
+      println("Animation: " + getAnimationIndex());
+      println("Potent A: " + potentAValInt);
+      println("Potent B: " + potentBValInt);
+      println("Potent C: " + potentCValInt);
+      println("--");
+    }
   }
 
   // Preview frame render
