@@ -1,16 +1,8 @@
-/**
- * Example: Blips
- *
- * Random growing blips.
- */
-void example_blips() {
-  // Styles
-  virtualDisplay.background(0);
-  virtualDisplay.stroke(255);
-  virtualDisplay.noFill();
-  
+void blips() {
+  int potentB = int(map(potentBValInt, 0, 1023, 3, 10));
+
   // Blips config
-  int blips_count = 5;
+  int blips_count = potentB;
   float blips_max_speed = 150.0;
   float blips_weight = 40.0;
   

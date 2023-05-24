@@ -1,12 +1,18 @@
-int animationsCount = 7;
+int animationsCount = 11;
 
 int getAnimationIndex() {
-  int animationIndex = mapPotentValToInt(potentAValInt);
+  int animationIndex = ceil(map(potentAValInt, 0, 500, 0, animationsCount));
   //animationIndex = 1;
   return animationIndex;
 }
 
 void custom() {
+  virtualDisplay.beginDraw();
+  virtualDisplay.background(0);
+  virtualDisplay.stroke(255);
+  virtualDisplay.noFill();
+
+  // create an array of animations and a switch/case to call them based on animationIndex
   int animationIndex = getAnimationIndex();
   switch (animationIndex) {
     case 1:
@@ -22,25 +28,26 @@ void custom() {
       balls();
       break;
     case 5:
-      //blobs();
+      lines();
       break;
     case 6:
-      snake();
+      blips();
       break;
     case 7:
       stars();
       break;
+    case 8:
+      tunnel();
+      break;
+    case 9:
+      clouds();
+      break;
+    case 10:
+      snake();
+      break;
   }
-    
-  //simpleText();
-  //bouncingBall();
-  //blobs();
-  //snake();
-  //stars();
-  //face();
-
-  //counterText();
-  //potentText();
+  
+  virtualDisplay.endDraw();
 }
 
 void simpleText() {
@@ -187,7 +194,7 @@ void example_setup() {
   
   // stars
   stars = new ArrayList<Star>();
-  int mappedPotentValInt = int(map(potentBValInt, 0, 500, 0, 200));
+  int mappedPotentValInt = int(map(potentBValInt, 0, 500, 30, 250));
   for (int i = 0; i < mappedPotentValInt; i++) {
     stars.add(new Star());
   }
@@ -446,8 +453,4 @@ class Star {
     pg.noStroke();
     pg.rect(position.x, position.y, 1, 1);
   }
-}
-
-int mapPotentValToInt(int potentVal) {
-  return ceil(map(potentVal, 0, 500, 0, animationsCount));
 }

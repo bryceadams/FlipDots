@@ -70,33 +70,12 @@ void draw() {
     read_arduino_data();
   }
   
-  // 3D test
-  virtual3D.beginDraw();
-  virtual3D.background(0);
-  virtual3D.translate(virtual3D.width / 2, virtual3D.height / 2);
-  virtual3D.rotateX(frameCount / 20.0);
-  virtual3D.rotateY(frameCount / 20.0);
-  virtual3D.stroke(255);
-  virtual3D.strokeWeight(2);
-  virtual3D.noFill();
-  virtual3D.box(11);
-  virtual3D.endDraw();
-  // End 3D test
-
   // Between beginDraw/endDraw you can draw whatever you want to virtualDisplay(PGraphics)
   virtualDisplay.beginDraw();
   virtualDisplay.background(0);
 
   // Blips
-  //example_blips();
-  //example_anim();
   custom();
-
-  // Games
-  // games_tetris();
-
-  // Crypto ticker
-  //crypto_ticker();
 
   // End drawing
   virtualDisplay.endDraw();
