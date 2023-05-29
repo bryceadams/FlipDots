@@ -1,13 +1,13 @@
 void clouds() {
     // potent b multiples speed
-    float potentB = map(potentBValInt, 0, 500, 1, 2);
+    float potentB = map(potentBValInt, 0, 500, 0.5, 2);
 
     float noiseScale = 0.03;
     float threshold = 0.5;
     float speedX = 0.004 * potentB;
     float speedY = 0.005 * potentB;
-    float speedZ = 0.002 * potentB;
-    float noiseLevel = 2.0;
+    float speedZ = 0.002; //* potentB;
+    float noiseLevel = map(potentCValInt, 0, 500, 2, 5);  // 2.0;
 
     virtualDisplay.loadPixels();
     for (int i = 0; i < virtualDisplay.pixels.length; i++) {
