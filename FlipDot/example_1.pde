@@ -157,7 +157,6 @@ int updateInterval = 3; // Controls how often the snake updates its position
 
 // Stars
 ArrayList<Star> stars;
-int numStars = 50;
 int potentBValIntPrevious = 50;
 
 // Face
@@ -436,15 +435,26 @@ class Star {
 
   Star() {
     position = new PVector(random(virtualDisplay.width), random(virtualDisplay.height));
-    speed = random(0.1, 1);
+
+    // start top
+    position.y = 0;
+
+    // speed random but based off potent c val
+    float cVal = map(potentCValInt, 0, 500, 0, 0.7);
+    speed = cVal + random(0.1, 0.3);
   }
 
   void update() {
     position.y += speed;
+
+    // put star back to top
     if (position.y > virtualDisplay.height) {
       position.y = 0;
       position.x = random(virtualDisplay.width);
-      speed = random(0.1, 1);
+
+      // speed random but based off potent c val
+      float cVal = map(potentCValInt, 0, 500, 0, 0.7);
+      speed = cVal + random(0.1, 0.3);
     }
   }
 
